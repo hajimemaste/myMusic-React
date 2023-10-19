@@ -9,7 +9,7 @@ function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/v1/myMusic")
+    fetch("https://sever-my-music.vercel.app/api/v1/myMusic/")
       .then((response) => {
         if (response.ok) {
           return response.json();
