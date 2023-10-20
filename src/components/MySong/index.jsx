@@ -8,75 +8,76 @@ import HandleSong from "./HandleSong";
 function MySong(props) {
   const { data } = props;
   const [indexSong, setIndexSong] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isReset, setIsReset] = useState(false);
+  const [processValue, setProcessValue] = useState(0);
+  const [handleAcitonSong, setHandleAcitonSong] = useState({
+    isPlaying: false,
+    isLoop: false,
+    isRamdom: false,
+  });
   const [isRender, setIsRender] = useState(false);
   const audioElement = useRef();
   const timeSongs = useRef();
-  var index = indexSong;
 
-  const timeSong = () => {
-    audioElement.current.ontimeupdate = () => {
-      timeSongs.current.value =
-        (audioElement.current.currentTime / audioElement.current.duration) *
-        100;
-      if (timeSongs.current.value == 100) {
-        indexSong == data.length - 1 ? 0 : (index += 1);
-        handleShowSong(index);
-        console.log(index);
-        console.log(indexSong);
-      }
-    };
-  };
-
+  // Show Item Song
   const handleShowSong = (id) => {
-    setIndexSong(id);
-    setIsPlaying(true);
-    index = id;
-    console.log(indexSong);
+    const songList = [...data];
+    const index = songList?.findIndex((item) => item._id === id);
+    setIndexSong(index);
+    setHandleAcitonSong({ ...handleAcitonSong, isPlaying: true });
   };
 
-  const handlePlay = () => {
-    if (isPlaying) {
-      audioElement.current.pause();
-    } else {
-      audioElement.current.play();
-    }
-    setIsPlaying(!isPlaying);
-    timeSong();
-  };
-
+  // Update Time
   const changeTimeSong = (e) => {
+    const value = e.target.value;
+    setProcessValue(parseFloat(value));
     audioElement.current.currentTime =
-      (e.target.value / 100) * audioElement.current.duration;
+      (parseFloat(value) / 100) * audioElement.current.duration;
   };
 
-  const nextSong = () => {
-    if (indexSong == data.length - 1) {
-      setIndexSong(0);
-    } else {
-      setIndexSong(indexSong + 1);
+  const handleUpdateTime = (e) => {
+    if (e.target.duration) {
+      const timeSong = (e.target.currentTime * 100) / e.target.duration;
+      setProcessValue(timeSong);
     }
-    setIsPlaying(true);
   };
 
-  const prerSong = () => {
-    if (indexSong == 0) {
-      setIndexSong(data.length - 1);
-    } else {
-      setIndexSong(indexSong - 1);
+  // Handle Action Song
+  const actionSong = (action) => {
+    switch (action) {
+      case "play":
+        if (handleAcitonSong.isPlaying) {
+          audioElement.current.pause();
+        } else {
+          audioElement.current.play();
+        }
+        setHandleAcitonSong({
+          ...handleAcitonSong,
+          isPlaying: !handleAcitonSong.isPlaying,
+        });
+        break;
+      case "next":
+        handleAcitonSong.isRamdom
+          ? setIndexSong(Math.floor(Math.random() * data.length))
+          : setIndexSong(indexSong === data.length - 1 ? 0 : indexSong + 1);
+        break;
+      case "prev":
+        handleAcitonSong.isRamdom
+          ? setIndexSong(Math.floor(Math.random() * data.length))
+          : setIndexSong(indexSong === 0 ? data.length - 1 : indexSong - 1);
+        break;
+      case "loop":
+        setHandleAcitonSong({
+          ...handleAcitonSong,
+          isLoop: !handleAcitonSong.isLoop,
+        });
+        break;
+      case "random":
+        setHandleAcitonSong({
+          ...handleAcitonSong,
+          isRamdom: !handleAcitonSong.isRamdom,
+        });
+        break;
     }
-    setIsPlaying(true);
-  };
-  const renderSong = () => {
-    setIndexSong(Math.floor(Math.random() * data.length));
-  };
-  const handleRenderSong = () => {
-    setIsRender(!isRender);
-  };
-
-  const resetSong = () => {
-    setIsReset(!isReset);
   };
 
   return (
@@ -84,27 +85,27 @@ function MySong(props) {
       <HandleSong
         data={data}
         indexSong={indexSong}
-        handlePlay={handlePlay}
-        isPlaying={isPlaying}
+        actionSong={actionSong}
+        handleAcitonSong={handleAcitonSong}
         timeSongs={timeSongs}
+        processValue={processValue}
         changeTimeSong={changeTimeSong}
-        nextSong={nextSong}
-        prerSong={prerSong}
-        resetSong={resetSong}
-        isReset={isReset}
-        renderSong={renderSong}
         isRender={isRender}
-        handleRenderSong={handleRenderSong}
       />
       <ListSong data={data} handleShowSong={handleShowSong} />
-      <LyrisSong data={data} indexSong={indexSong} />
+      <LyrisSong lyrisSong={data[indexSong]?.lyrics} />
 
       <audio
         ref={audioElement}
-        src={data[indexSong].path}
+        src={data[indexSong]?.path}
         className="audio"
         autoPlay
-        loop={isReset}
+        onEnded={() => {
+          actionSong("next");
+        }}
+        loop={handleAcitonSong.isLoop}
+        onTimeUpdate={handleUpdateTime}
+        onChange={handleUpdateTime}
       ></audio>
     </div>
   );

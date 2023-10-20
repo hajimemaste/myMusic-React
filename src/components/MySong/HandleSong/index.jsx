@@ -8,14 +8,12 @@ function HandleSong(props) {
   const {
     data,
     indexSong,
-    handlePlay,
-    isPlaying,
+    handleAcitonSong,
+    actionSong,
     timeSongs,
+    processValue,
     changeTimeSong,
-    prerSong,
-    nextSong,
     resetSong,
-    isReset,
     renderSong,
     isRender,
     handleRenderSong,
@@ -27,7 +25,11 @@ function HandleSong(props) {
         <img
           src={data[indexSong].image}
           alt=""
-          className={isPlaying ? "music_cd-main action" : "music_cd-main"}
+          className={
+            handleAcitonSong.isPlaying
+              ? "music_cd-main action"
+              : "music_cd-main"
+          }
         />
       </div>
       <div className="music_play">
@@ -40,30 +42,31 @@ function HandleSong(props) {
           min="0"
           max="100"
           step="0.1"
+          value={processValue}
           onChange={changeTimeSong}
         />
         <div className="music_btn">
           <FiRotateCcw
             style={
-              isReset
+              handleAcitonSong.isLoop
                 ? { color: "orange", fontSize: 20 }
                 : { color: "black", fontSize: 20 }
             }
-            onClick={() => resetSong()}
+            onClick={() => actionSong("loop")}
           />
           <FaAnglesLeft
             style={{ fontSize: 20 }}
             onClick={() => {
-              isRender ? renderSong() : prerSong();
+              actionSong("prev");
             }}
           />
           <div
             className="music_btn-actions"
             onClick={() => {
-              handlePlay();
+              actionSong("play");
             }}
           >
-            {isPlaying ? (
+            {handleAcitonSong.isPlaying ? (
               <BiPause style={{ fontSize: 30, color: "white" }} />
             ) : (
               <BsFillPlayFill style={{ fontSize: 30, color: "white" }} />
@@ -72,16 +75,16 @@ function HandleSong(props) {
           <FaAnglesRight
             style={{ fontSize: 20 }}
             onClick={() => {
-              isRender ? renderSong() : nextSong();
+              actionSong("next");
             }}
           />
           <BiShuffle
             style={
-              isRender
+              handleAcitonSong.isRamdom
                 ? { color: "orange", fontSize: 20 }
                 : { color: "black", fontSize: 20 }
             }
-            onClick={() => handleRenderSong()}
+            onClick={() => actionSong("random")}
           />
         </div>
       </div>

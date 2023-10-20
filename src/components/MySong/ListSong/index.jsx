@@ -7,11 +7,11 @@ function ListSong(props) {
     <div className="music_block">
       <h2>Music là để nghe 🎶</h2>
       <div className="list_music">
-        {data.map((item, id) => (
+        {data.map((item) => (
           <div
             key={item.name}
             className="item_music"
-            onClick={() => handleShowSong(id)}
+            onClick={() => handleShowSong(item._id)}
           >
             <img src={item.image} alt="" />
             <div className="item_content">
