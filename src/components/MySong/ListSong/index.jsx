@@ -1,7 +1,8 @@
 import React from "react";
+import { BsFillTrashFill } from "react-icons/bs";
 
 function ListSong(props) {
-  const { data, handleShowSong } = props;
+  const { data, handleShowSong, handleDeleteSong } = props;
 
   return (
     <div className="music_block">
@@ -9,16 +10,16 @@ function ListSong(props) {
       <div className="list_music">
         {data.map((item) => (
           <div
-            key={item.name}
+            key={item?.name}
             className="item_music"
-            onClick={() => handleShowSong(item._id)}
+            onClick={() => handleShowSong(item?._id)}
           >
-            <img src={item.image} alt="" />
+            <img src={item?.image} alt="" />
             <div className="item_content">
-              <h3>{item.name}</h3>
-              <p>{item.singer}</p>
+              <h3>{item?.name}</h3>
+              <p>{item?.singer}</p>
             </div>
-            <i className="fa-solid fa-ellipsis-vertical"></i>
+            <BsFillTrashFill onClick={() => handleDeleteSong(item?._id)} />
           </div>
         ))}
       </div>

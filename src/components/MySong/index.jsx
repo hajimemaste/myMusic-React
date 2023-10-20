@@ -6,7 +6,7 @@ import LyrisSong from "./LyricsSong";
 import HandleSong from "./HandleSong";
 
 function MySong(props) {
-  const { data } = props;
+  const { data, handleRemove } = props;
   const [indexSong, setIndexSong] = useState(0);
   const [processValue, setProcessValue] = useState(0);
   const [handleAcitonSong, setHandleAcitonSong] = useState({
@@ -80,6 +80,15 @@ function MySong(props) {
     }
   };
 
+  const handleDeleteSong = (id) => {
+    fetch(`https://sever-my-music.vercel.app/api/v1/myMusic/delete/${id}`, {
+      method: "delete",
+    }).then((res) => {
+      handleRemove(id);
+      console.log(res.status);
+    });
+  };
+
   return (
     <div className="main">
       <HandleSong
@@ -92,7 +101,11 @@ function MySong(props) {
         changeTimeSong={changeTimeSong}
         isRender={isRender}
       />
-      <ListSong data={data} handleShowSong={handleShowSong} />
+      <ListSong
+        data={data}
+        handleShowSong={handleShowSong}
+        handleDeleteSong={handleDeleteSong}
+      />
       <LyrisSong lyrisSong={data[indexSong]?.lyrics} />
 
       <audio
@@ -103,7 +116,7 @@ function MySong(props) {
         onEnded={() => {
           actionSong("next");
         }}
-        loop={handleAcitonSong.isLoop}
+        loop={handleAcitonSong?.isLoop}
         onTimeUpdate={handleUpdateTime}
         onChange={handleUpdateTime}
       ></audio>

@@ -27,11 +27,16 @@ function App() {
         setLoading(false);
       });
   }, []);
-
+  const handleRemove = (id) => {
+    const songList = [...data];
+    const index = songList.findIndex((item) => item._id === id);
+    songList.splice(index, 1);
+    setData(songList);
+  };
   if (loading) return "Loading ...";
   if (error) return "Error!!";
 
-  return <MySong data={data} />;
+  return <MySong data={data} handleRemove={handleRemove} />;
 }
 
 export default App;

@@ -13,28 +13,24 @@ function HandleSong(props) {
     timeSongs,
     processValue,
     changeTimeSong,
-    resetSong,
-    renderSong,
-    isRender,
-    handleRenderSong,
   } = props;
 
   return (
     <div className="music_box">
       <div className="music_cd">
         <img
-          src={data[indexSong].image}
+          src={data[indexSong]?.image}
           alt=""
           className={
-            handleAcitonSong.isPlaying
+            handleAcitonSong?.isPlaying
               ? "music_cd-main action"
               : "music_cd-main"
           }
         />
       </div>
       <div className="music_play">
-        <h2 className="music_name">{data[indexSong].name}</h2>
-        <p>{data[indexSong].singer}</p>
+        <h2 className="music_name">{data[indexSong]?.name}</h2>
+        <p>{data[indexSong]?.singer}</p>
         <input
           type="range"
           id="music_run"
@@ -48,7 +44,7 @@ function HandleSong(props) {
         <div className="music_btn">
           <FiRotateCcw
             style={
-              handleAcitonSong.isLoop
+              handleAcitonSong?.isLoop
                 ? { color: "orange", fontSize: 20 }
                 : { color: "black", fontSize: 20 }
             }
@@ -66,7 +62,7 @@ function HandleSong(props) {
               actionSong("play");
             }}
           >
-            {handleAcitonSong.isPlaying ? (
+            {handleAcitonSong?.isPlaying ? (
               <BiPause style={{ fontSize: 30, color: "white" }} />
             ) : (
               <BsFillPlayFill style={{ fontSize: 30, color: "white" }} />
@@ -80,7 +76,7 @@ function HandleSong(props) {
           />
           <BiShuffle
             style={
-              handleAcitonSong.isRamdom
+              handleAcitonSong?.isRamdom
                 ? { color: "orange", fontSize: 20 }
                 : { color: "black", fontSize: 20 }
             }
